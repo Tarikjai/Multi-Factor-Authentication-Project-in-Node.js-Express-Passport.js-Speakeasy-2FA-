@@ -19,17 +19,17 @@ passport.use(new LocalStrategy(async(username, password, done)=> {
     }
   ));
 
-passport.serializeUser((user, done) =>{
-    console.log("We are inside serialUSer");
-    done(null, user._id)
-})
+  passport.serializeUser((user, done) => {
+    console.log("We are inside serializeUser");
+    done(null, user._id);  // Sérialise l'ID de l'utilisateur
+});
 
-passport.deserializeUser(async(_id, done)=>{
+passport.deserializeUser(async (_id, done) => {
     try {
-        console.log("We are inside deserilizeUser");
-        const user = await User.findById(_id);
-        done(null, user)
+        console.log("We are inside deserializeUser");
+        const user = await User.findById(_id);  // Recherche de l'utilisateur par ID
+        done(null, user);  // Désérialise en renvoyant l'utilisateur complet
     } catch (error) {
-        done(error)
+        done(error);  // Gère les erreurs éventuelles
     }
-})
+});
