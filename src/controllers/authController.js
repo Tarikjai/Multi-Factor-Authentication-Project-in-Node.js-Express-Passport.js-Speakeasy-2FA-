@@ -81,9 +81,35 @@ const setup2FA = async(req,res)=>{
    }
 }
 const verify = async(req,res)=>{
+    const {token} = req.body;
+    const user = req.user;
+    
+    const  verified = speakeasy.totp.verify({
+        secret : user.twoFactorSecret,
+        encoding:"base32",
+        token
+    })
 
+    if (verified) {
+        const jwtToken = jwt.sign(
+            {username: user.name},
+            process.env.JWT_SECRET,
+            { expiresIn: "1hr"}
+        )
+        res.status(200).json({ message: "2FA successful", token: jwtToken})
+    } else {
+        res.status(400).json({message: 'Invalid 2FA token'})
+    }
 }
 const reset2FA = async(req,res)=>{
-
+    try {
+        const user = req.body;
+        user.twoFactorSecret = ""
+        user.isMfaActive= false
+        await user.save()
+        res.status(200).json({message: '2FA user reset'})
+    } catch (error) {
+        res.status(500).json({error:"Error reseting 2FA",message: error})
+    }
 }
 export  {register , login, authStatus, logout, setup2FA, verify, reset2FA}
