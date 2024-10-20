@@ -5,14 +5,14 @@ import 'dotenv/config'
 import cors from "cors"
 import dbConnect from './config/dbConnect.js'
 import authRoutes   from './routes/authRoutes.js'
-
+import "./config/passportConfig.js"
 
 const app = express()
 dbConnect()
 
 //middlewares
 const corsOptions = {
-    origin: 'http://localhost:3000.com',
+    origin: 'http://localhost:3000',
     credentials: true,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   }
@@ -32,7 +32,7 @@ app.use(passport.initialize());
 app.use(passport.session())
 
 // Routes
-app.use("api/auth",authRoutes)
+app.use("/api/auth",authRoutes)
 
 
 
